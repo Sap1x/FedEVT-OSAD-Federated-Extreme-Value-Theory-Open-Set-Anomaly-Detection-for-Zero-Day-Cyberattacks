@@ -4,20 +4,7 @@
 
 ### BiLSTM + Temporal Attention + Autoencoder --- Research Backbone
 
-```{=html}
-<p align="center">
-```
-`<strong>`{=html}A research-oriented framework for evaluating
-generalization to previously unseen cyber-threat
-families.`</strong>`{=html}
-```{=html}
-</p>
-```
-```{=html}
-<p align="center">
 
-</p>
-```
 FedEVT-OSAD explores open-set and zero-day anomaly detection in network
 traffic. Its current implementation establishes a sequence-learning
 backbone using a **Bidirectional LSTM (BiLSTM), learned temporal
