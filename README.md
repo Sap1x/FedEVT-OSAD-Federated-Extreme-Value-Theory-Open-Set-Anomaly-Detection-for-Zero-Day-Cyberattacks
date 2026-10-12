@@ -15,12 +15,7 @@ families.`</strong>`{=html}
 ```
 ```{=html}
 <p align="center">
-```
-`<img src="https://img.shields.io/badge/Research-Prototype-blue" alt="Research prototype">`{=html}
-`<img src="https://img.shields.io/badge/Backbone-BiLSTM%20%2B%20Attention%20%2B%20AE-purple" alt="Model backbone">`{=html}
-`<img src="https://img.shields.io/badge/Evaluation-LOFO-orange" alt="LOFO evaluation">`{=html}
-`<img src="https://img.shields.io/badge/Status-Neural%20Baseline-green" alt="Neural baseline">`{=html}
-```{=html}
+
 </p>
 ```
 FedEVT-OSAD explores open-set and zero-day anomaly detection in network
