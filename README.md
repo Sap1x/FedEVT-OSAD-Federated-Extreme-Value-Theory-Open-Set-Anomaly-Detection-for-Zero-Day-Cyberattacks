@@ -11,9 +11,9 @@ FedEVT-OSAD investigates open-set and zero-day cyberattack detection in decentra
 To address this challenge, **FedEVT-OSAD** couples temporal sequence autoencoding, latent prototype clustering, and statistical Extreme Value Theory (EVT) within a privacy-preserving Federated Learning (FL) paradigm.
 
 In accordance with our research mentoring guidelines, this repository implements and evaluates a **comparative benchmark across three candidate temporal representation backbones**:
-1. **BiLSTM + Learned Temporal Attention Autoencoder** (*Backbone A — Recurrent Inductive Bias*)
-2. **Temporal Convolutional Network (TCN) Autoencoder** (*Backbone B — Dilated Causal Convolutional Inductive Bias*)
-3. **Temporal Transformer Autoencoder** (*Backbone C — Multi-Head Self-Attention Inductive Bias*)
+1. **BiLSTM + Learned Temporal Attention Autoencoder** (*Backbone A — Saptarshi Mondal*)
+2. **Temporal Convolutional Network (TCN / Dilated Conv) Autoencoder** (*Backbone B — Srijit Paul*)
+3. **Temporal Transformer / Masked Autoencoder** (*Backbone C — Saikat Paul*)
 
 All three backbones share the exact same standardized **Phase 0 Data Pipeline** (anti-shortcut feature sanitization, temporal windowing, automated Leave-One-Family-Out zero-day splitting, and Dirichlet non-IID client partitioning) and **Phase 1 Local Open-Set Engine** (benign-only reconstruction calibration, latent class prototypes, and dual-signal fused novelty scoring).
 
@@ -144,9 +144,9 @@ flowchart TD
 
     subgraph Backbone Comparison Module
         F --> G{"Select Encoder Backbone"}
-        G -->|"Backbone A (Saptarshi)"| H1["BiLSTM + Temporal Attention"]
-        G -->|"Backbone B (Sriji)"| H2["Temporal Convolutional Network (TCN)"]
-        G -->|"Backbone C (Teammate 3)"| H3["Temporal Transformer"]
+        G -->|"Backbone A (Saptarshi Mondal)"| H1["BiLSTM + Temporal Attention"]
+        G -->|"Backbone B (Srijit Paul)"| H2["TCN (Dilated Conv) Autoencoder"]
+        G -->|"Backbone C (Saikat Paul)"| H3["Transformer / Masked-AE"]
         H1 --> I["Bottleneck Latent Vector: z ∈ R^64"]
         H2 --> I
         H3 --> I
@@ -173,9 +173,9 @@ flowchart TD
 
 To determine the most effective inductive bias for network flow sequence modeling, our team tests three complementary architectures under the identical Phase 0 & 1 pipeline:
 
-| Feature / Metric | Backbone A: BiLSTM + Attention | Backbone B: TCN (User Module) | Backbone C: Temporal Transformer |
+| Feature / Metric | Backbone A: BiLSTM + Attention | Backbone B: TCN (Dilated Conv AE) | Backbone C: Transformer / Masked-AE |
 | :--- | :--- | :--- | :--- |
-| **Primary Investigator** | Saptarshi Mondal | Sriji | Teammate 3 |
+| **Primary Investigator** | Saptarshi Mondal | Srijit Paul | Saikat Paul |
 | **Inductive Bias** | Recurrent State Transition | Dilated Causal 1D Convolutions | Multi-Head Self-Attention |
 | **Temporal Dependency Modeling** | Bidirectional hidden state accumulation + learned step weights | Exponentially dilated receptive field ($d = 1, 2, 4, \dots$) | Pairwise all-to-all timestep attention with positional embeddings |
 | **Vanishing Gradient Protection** | LSTM gating mechanism | Residual skip connections ($x + \mathcal{F}(x)$) | Residual connections + LayerNorm |
@@ -185,20 +185,20 @@ To determine the most effective inductive bias for network flow sequence modelin
 | **Federated Communication Payload** | Moderate weight updates per round | Smallest gradient payload per round | Largest client upload payload |
 | **Research Role in FedEVT-OSAD** | Baseline benchmark | Edge-optimized, low-latency candidate | High-capacity global context candidate |
 
-### 1. BiLSTM + Temporal Attention (Backbone A)
+### 1. BiLSTM + Temporal Attention Autoencoder (Backbone A — Saptarshi Mondal)
 - **Structure:** 2-layer Bidirectional LSTM ($h_{\text{hidden}} = 64$) followed by a temporal attention pooling layer:
   $$\alpha_t = \frac{\exp(u^\top \tanh(W h_t + b))}{\sum_{\tau=1}^T \exp(u^\top \tanh(W h_\tau + b))}, \quad c = \sum_{t=1}^T \alpha_t h_t$$
 - **Characteristics:** Strong temporal smoothing; captures bidirectional flow context; sequential computation limits throughput on resource-constrained IoT gateways.
 
-### 2. Temporal Convolutional Network — TCN (Backbone B)
+### 2. Temporal Convolutional Network — TCN (Backbone B — Srijit Paul)
 - **Structure:** Stack of causal 1D convolutional blocks with dilated convolutions ($d \in \{1, 2, 4\}$), weight normalization, ReLU/GELU activations, and residual connections:
   $$\hat{y}_t = \sum_{k=0}^{K-1} f(k) \cdot x_{t - d \cdot k}$$
 - **Characteristics:** Strict causality prevents future information leakage; dilated filters yield an exponential receptive field over long flow bursts; fast inference and minimal memory overhead make it ideal for federated edge deployment.
 
-### 3. Temporal Transformer (Backbone C)
+### 3. Temporal Transformer / Masked-AE (Backbone C — Saikat Paul)
 - **Structure:** Sinusoidal/learnable temporal positional encodings + stacked Transformer encoder layers with multi-head self-attention:
   $$\text{Attention}(Q, K, V) = \text{softmax}\left(\frac{QK^\top}{\sqrt{d_k}}\right)V$$
-- **Characteristics:** Unrestricted global receptive field across all timesteps; excels at identifying complex, non-local packet correlation patterns; requires larger training volume to overcome the lack of recurrent/convolutional inductive bias.
+- **Characteristics:** Unrestricted global receptive field across all timesteps; excels at identifying complex, non-local packet correlation patterns; supports masked-autoencoding sequence reconstruction.
 
 ### Abstract Interface for Teammate Backbones
 
@@ -427,8 +427,8 @@ Before reporting comparative results across backbones:
 
 This project is developed collaboratively as an advanced research initiative in Federated Learning and Open-Set Cyberattack Detection:
 
-* **Saptarshi Mondal** — Project Lead, BiLSTM + Temporal Attention Architecture (Backbone A), EVT Modeling
-* **Sriji** — Temporal Convolutional Network (TCN) Architecture (Backbone B), Edge Efficiency & Latency Optimization
-* **Teammate 3** — Temporal Transformer Architecture (Backbone C), Long-Range Sequence Dynamics
+* **Saptarshi Mondal** — BiLSTM + Attention Autoencoder (Backbone A), Extreme Value Theory (EVT) Modeling
+* **Srijit Paul** — Temporal Convolutional Network (TCN / Dilated Conv) Autoencoder (Backbone B), Edge Efficiency & Latency Optimization
+* **Saikat Paul** — Temporal Transformer / Masked Autoencoder (Backbone C), Long-Range Sequence Dynamics & Attention Mechanisms
 
 *Under research mentorship for decentralized anomaly detection in mission-critical networks.*
